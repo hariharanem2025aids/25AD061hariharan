@@ -1,8 +1,6 @@
 package Arunjava.java.Services;
 
-import Arunjava.java.Exception.BadRequestException;
-import Arunjava.java.Exception.DuplicateResourceException;
-import Arunjava.java.Exception.ResourceNotFoundException;
+
 import Arunjava.java.Models.Household;
 import Arunjava.java.Respository.HouseholdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,58 +14,23 @@ import java.util.List;
 public class HouseholdServices {
 
     @Autowired
-    private HouseholdRepository householdRepository;
+    private HouseholdRepository householdrepository;
 
-    @Transactional
-    public Household create(Household household) {
-        household.setId(null);
-        validate(household);
-        if (householdRepository.existsByEmail(household.getEmail())) {
-            throw new DuplicateResourceException("A household with email '" + household.getEmail() + "' already exists");
-        }
-        return householdRepository.save(household);
+    public Household createhousehold(Household data) {
+        Household result = householdrepository.save(data);
+        return result;
     }
 
-    public List<Household> getAll() {
-        return householdRepository.findAll();
+    public List<Household> getallhousehold() {
+        return householdrepository.findAll();
     }
 
-    public Household getById(Long id) {
-        return householdRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Household not found with id " + id));
+    public Household updatehousehold(Household data) {
+        return householdrepository.save(data);
     }
 
-    @Transactional
-    public Household update(Household household) {
-        if (household.getId() == null) {
-            throw new BadRequestException("Household id is required for update");
-        }
-        Household existing = getById(household.getId());
-        validate(household);
-        if (!existing.getEmail().equalsIgnoreCase(household.getEmail())
-                && householdRepository.existsByEmail(household.getEmail())) {
-            throw new DuplicateResourceException("A household with email '" + household.getEmail() + "' already exists");
-        }
-        existing.setName(household.getName());
-        existing.setEmail(household.getEmail());
-        existing.setPhone(household.getPhone());
-        existing.setAddress(household.getAddress());
-        existing.setCity(household.getCity());
-        existing.setNumberOfMembers(household.getNumberOfMembers());
-        if (household.getStatus() != null) {
-            existing.setStatus(household.getStatus());
-        }
-        return householdRepository.save(existing);
-    }
-
-    @Transactional
-    public void delete(Long id) {
-        householdRepository.delete(getById(id));
-    }
-
-    private void validate(Household household) {
-        if (household.getRegistrationDate() != null && household.getRegistrationDate().isAfter(LocalDate.now())) {
-            throw new BadRequestException("Registration date cannot be in the future");
-        }
+    public Household getbyid(Long Id) {
+        return householdrepository.findById(Id)
+                .orElseThrow(() -> new RuntimeException("Household not found"));
     }
 }

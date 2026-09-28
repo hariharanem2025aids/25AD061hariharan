@@ -1,11 +1,11 @@
 package Arunjava.java.Controller;
 
-import Arunjava.java.Dto.ParticipationRequest;
 import Arunjava.java.Models.Participation;
 import Arunjava.java.Services.ParticipationServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,39 +17,42 @@ public class ParticipationController {
     @Autowired
     private ParticipationServices participationServices;
 
-    @PostMapping("/join")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Participation join(@Valid @RequestBody ParticipationRequest request) {
-        return participationServices.join(request);
-    }
-
     @GetMapping("/getall")
-    public List<Participation> getAll() {
-        return participationServices.getAll();
+    ResponseEntity<List<Participation>> getall() {
+        return new ResponseEntity<>(
+                participationServices.getallparticipation(),
+                HttpStatus.OK
+        );
     }
 
-    @GetMapping("/getbyid/{id}")
-    public Participation getById(@PathVariable Long id) {
-        return participationServices.getById(id);
+    @PutMapping("/update")
+    ResponseEntity<Participation> updateparticipation(@RequestBody Participation data) {
+        return new ResponseEntity<>(
+                participationServices.updateparticipation(data),
+                HttpStatus.ACCEPTED
+        );
     }
 
-    @GetMapping("/byhousehold/{householdId}")
-    public List<Participation> getByHousehold(@PathVariable Long householdId) {
-        return participationServices.getByHousehold(householdId);
+    @GetMapping("getbyid/{id}")
+    ResponseEntity<?> getbyId(@PathVariable long id) {
+        try {
+            Participation response = participationServices.getbyid(id);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (RuntimeException exception) {
+            return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
+        }
     }
 
-    @GetMapping("/bychallenge/{challengeId}")
-    public List<Participation> getByChallenge(@PathVariable Long challengeId) {
-        return participationServices.getByChallenge(challengeId);
+    @PostMapping("/create")
+    ResponseEntity<Participation> createparticipation(@RequestBody Participation body) {
+        return new ResponseEntity<>(
+                participationServices.createparticipation(body),
+                HttpStatus.CREATED
+        );
     }
 
-    @PutMapping("/progress/{id}")
-    public Participation updateProgress(@PathVariable Long id) {
-        return participationServices.updateProgress(id);
-    }
-
-    @DeleteMapping("/withdraw/{id}")
-    public void withdraw(@PathVariable Long id) {
-        participationServices.withdraw(id);
+    @GetMapping
+    String getbyIdParam(@RequestParam long i) {
+        return "participation with id " + i;
     }
 }

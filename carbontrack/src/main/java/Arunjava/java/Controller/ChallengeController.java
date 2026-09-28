@@ -5,6 +5,7 @@ import Arunjava.java.Services.ChallengeServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,29 +17,42 @@ public class ChallengeController {
     @Autowired
     private ChallengeServices challengeServices;
 
-    @PostMapping("/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Challenge create(@Valid @RequestBody Challenge challenge) {
-        return challengeServices.create(challenge);
-    }
-
     @GetMapping("/getall")
-    public List<Challenge> getAll() {
-        return challengeServices.getAll();
-    }
-
-    @GetMapping("/getbyid/{id}")
-    public Challenge getById(@PathVariable Long id) {
-        return challengeServices.getById(id);
+    ResponseEntity<List<Challenge>> getall() {
+        return new ResponseEntity<>(
+                challengeServices.getallchallenge(),
+                HttpStatus.OK
+        );
     }
 
     @PutMapping("/update")
-    public Challenge update(@Valid @RequestBody Challenge challenge) {
-        return challengeServices.update(challenge);
+    ResponseEntity<Challenge> updatechallenge(@RequestBody Challenge data) {
+        return new ResponseEntity<>(
+                challengeServices.updatechallenge(data),
+                HttpStatus.ACCEPTED
+        );
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable Long id) {
-        challengeServices.delete(id);
+    @GetMapping("getbyid/{id}")
+    ResponseEntity<?> getbyId(@PathVariable long id) {
+        try {
+            Challenge response = challengeServices.getbyid(id);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (RuntimeException exception) {
+            return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/create")
+    ResponseEntity<Challenge> createchallenge(@RequestBody Challenge body) {
+        return new ResponseEntity<>(
+                challengeServices.createchallenge(body),
+                HttpStatus.CREATED
+        );
+    }
+
+    @GetMapping
+    String getbyIdParam(@RequestParam long i) {
+        return "challenge with id " + i;
     }
 }

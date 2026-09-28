@@ -5,6 +5,7 @@ import Arunjava.java.Services.HouseholdServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,29 +17,33 @@ public class HouseholdController {
     @Autowired
     private HouseholdServices householdServices;
 
-    @PostMapping("/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Household create(@Valid @RequestBody Household household) {
-        return householdServices.create(household);
-    }
-
     @GetMapping("/getall")
-    public List<Household> getAll() {
-        return householdServices.getAll();
-    }
-
-    @GetMapping("/getbyid/{id}")
-    public Household getById(@PathVariable Long id) {
-        return householdServices.getById(id);
+    ResponseEntity<List<Household>> getall() {
+        return new ResponseEntity<>(householdServices.getallhousehold(), HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public Household update(@Valid @RequestBody Household household) {
-        return householdServices.update(household);
+    ResponseEntity<Household> updatehousehold(@RequestBody Household data) {
+        return new ResponseEntity<>(householdServices.updatehousehold(data), HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable Long id) {
-        householdServices.delete(id);
+    @GetMapping("getbyid/{id}")
+    ResponseEntity<?> getbyId(@PathVariable long id) {
+        try {
+            Household response = householdServices.getbyid(id);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (RuntimeException exception) {
+            return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/create")
+    ResponseEntity<Household> createhousehold(@RequestBody Household body) {
+        return new ResponseEntity<>(householdServices.createhousehold(body), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    String getbyIdParam(@RequestParam long i) {
+        return "household with id " + i;
     }
 }

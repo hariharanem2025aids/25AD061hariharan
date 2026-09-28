@@ -1,116 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CarbonTrack</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarbonTrack</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <h1>🌍 CarbonTrack</h1>
-    <nav>
-      <button class="nav-btn active" data-tab="households">Households</button>
-      <button class="nav-btn" data-tab="activities">Log Activity</button>
-      <button class="nav-btn" data-tab="footprint">Footprint</button>
-      <button class="nav-btn" data-tab="challenges">Challenges</button>
-      <button class="nav-btn" data-tab="participation">Participation</button>
-      <button class="nav-btn" data-tab="leaderboard">Leaderboard</button>
-    </nav>
+
+<div class="sidebar">
+  <h2>🌱 CarbonTrack</h2>
+
+  <button onclick="showSection('dashboard')">Dashboard</button>
+  <button onclick="showSection('household')">Households</button>
+  <button onclick="showSection('activity')">Activity Logs</button>
+  <button onclick="showSection('challenge')">Challenges</button>
+  <button onclick="showSection('participation')">Participation</button>
+</div>
+
+<div class="main">
+
+  <header>
+    <h1>CarbonTrack</h1>
+    <p>Household Carbon Management System</p>
   </header>
 
-  <main>
-    <section id="households" class="tab-panel active">
-      <h2>Households</h2>
-      <form id="householdForm" class="entity-form">
-        <input type="hidden" name="id">
-        <input name="name" placeholder="Household name" required>
-        <input name="email" type="email" placeholder="Email" required>
-        <input name="phone" placeholder="Phone" required>
-        <input name="city" placeholder="City">
-        <input name="address" placeholder="Address">
-        <input name="numberOfMembers" type="number" min="1" max="50" value="1" placeholder="Members" required>
-        <select name="status">
-          <option value="ACTIVE">ACTIVE</option>
-          <option value="INACTIVE">INACTIVE</option>
-        </select>
-        <button type="submit">Save</button>
-        <button type="button" class="secondary" onclick="resetForm('householdForm')">Clear</button>
-      </form>
-      <div id="householdTable" class="table-wrap"></div>
-    </section>
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="section active">
 
-    <section id="activities" class="tab-panel">
-      <h2>Log Activity</h2>
-      <form id="activityForm" class="entity-form">
-        <input type="hidden" name="id">
-        <select name="householdId" class="household-select" required></select>
-        <input name="logDate" type="date" required>
-        <select name="activityType" id="activityTypeSelect" required></select>
-        <input name="quantity" type="number" step="0.01" min="0.01" placeholder="Quantity" required>
-        <input name="notes" placeholder="Notes (optional)">
-        <button type="submit">Save</button>
-        <button type="button" class="secondary" onclick="resetForm('activityForm')">Clear</button>
-      </form>
-      <div class="filter-row">
-        <label>Show logs for
-          <select id="activityFilter"></select>
-        </label>
+    <h2>Dashboard</h2>
+
+    <div class="cards">
+
+      <div class="card">
+        <h3>Households</h3>
+        <p id="householdCount">0</p>
       </div>
-      <div id="activityTable" class="table-wrap"></div>
-    </section>
 
-    <section id="footprint" class="tab-panel">
-      <h2>Footprint</h2>
-      <div class="filter-row">
-        <select id="footprintHousehold" class="household-select"></select>
-        <input type="month" id="footprintMonth">
-        <button id="footprintBtn">Calculate</button>
+      <div class="card">
+        <h3>Activities</h3>
+        <p id="activityCount">0</p>
       </div>
-      <div id="footprintResult"></div>
-      <h3>Last 6 months</h3>
-      <div id="historyTable" class="table-wrap"></div>
-      <h3>Emission factors</h3>
-      <div id="factorTable" class="table-wrap"></div>
-    </section>
 
-    <section id="challenges" class="tab-panel">
-      <h2>Challenges</h2>
-      <form id="challengeForm" class="entity-form">
-        <input type="hidden" name="id">
-        <input name="title" placeholder="Title" required>
-        <input name="description" placeholder="Description">
-        <input name="targetReductionPercent" type="number" step="0.1" min="1" max="100" placeholder="Target %" required>
-        <input name="startDate" type="date" required>
-        <input name="endDate" type="date" required>
-        <button type="submit">Save</button>
-        <button type="button" class="secondary" onclick="resetForm('challengeForm')">Clear</button>
-      </form>
-      <div id="challengeTable" class="table-wrap"></div>
-    </section>
-
-    <section id="participation" class="tab-panel">
-      <h2>Participation</h2>
-      <form id="joinForm" class="entity-form">
-        <select name="householdId" class="household-select" required></select>
-        <select name="challengeId" id="joinChallenge" required></select>
-        <button type="submit">Join challenge</button>
-      </form>
-      <div id="participationTable" class="table-wrap"></div>
-    </section>
-
-    <section id="leaderboard" class="tab-panel">
-      <h2>Monthly Leaderboard</h2>
-      <p class="hint">Ranked by % reduction versus each household's own previous month.</p>
-      <div class="filter-row">
-        <input type="month" id="leaderboardMonth">
-        <button id="leaderboardBtn">Load</button>
+      <div class="card">
+        <h3>Challenges</h3>
+        <p id="challengeCount">0</p>
       </div>
-      <div id="leaderboardTable" class="table-wrap"></div>
-    </section>
-  </main>
 
-  <div id="toast" class="toast"></div>
-  <script src="app.js"></script>
+      <div class="card">
+        <h3>Participations</h3>
+        <p id="participationCount">0</p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- HOUSEHOLD -->
+  <section id="household" class="section">
+
+    <h2>Household Management</h2>
+
+    <form id="householdForm">
+
+      <input type="number" id="householdId" placeholder="ID for Update">
+
+      <input type="text" id="householdName" placeholder="Household Name" required>
+
+      <input type="text" id="householdAddress" placeholder="Address">
+
+      <input type="text" id="householdCity" placeholder="City">
+
+      <input type="text" id="householdDistrict" placeholder="District">
+
+      <input type="text" id="householdState" placeholder="State">
+
+      <input type="email" id="householdEmail" placeholder="Email">
+
+      <input type="text" id="householdPhone" placeholder="Phone Number">
+
+      <input type="number" id="householdMembers" placeholder="Members">
+
+      <input type="number" step="0.01" id="householdCarbon" placeholder="Carbon Footprint">
+
+      <button type="submit">Create Household</button>
+
+      <button type="button" onclick="updateHousehold()">Update Household</button>
+
+    </form>
+
+    <hr>
+
+    <input type="number" id="searchHouseholdId" placeholder="Enter Household ID">
+
+    <button onclick="getHouseholdById()">Search</button>
+
+    <button onclick="getHouseholds()">Refresh</button>
+
+    <div id="householdResult"></div>
+
+  </section>
+
+  <!-- ACTIVITY -->
+  <section id="activity" class="section">
+
+    <h2>Activity Logs</h2>
+
+    <form id="activityForm">
+
+      <input type="number" id="activityId" placeholder="ID for Update">
+
+      <input type="text" id="activityName" placeholder="Activity">
+
+      <input type="text" id="activityCategory" placeholder="Category">
+
+      <input type="text" id="activityDescription" placeholder="Description">
+
+      <input type="text" id="activityDate" placeholder="Date">
+
+      <input type="text" id="activityHousehold" placeholder="Household Name">
+
+      <input type="number" step="0.01" id="activityCarbon" placeholder="Carbon Emission">
+
+      <button type="submit">Create Activity</button>
+
+      <button type="button" onclick="updateActivity()">Update Activity</button>
+
+    </form>
+
+    <hr>
+
+    <input type="number" id="searchActivityId" placeholder="Enter Activity ID">
+
+    <button onclick="getActivityById()">Search</button>
+
+    <button onclick="getActivities()">Refresh</button>
+
+    <div id="activityResult"></div>
+
+  </section>
+
+  <!-- CHALLENGE -->
+  <section id="challenge" class="section">
+
+    <h2>Challenges</h2>
+
+    <form id="challengeForm">
+
+      <input type="number" id="challengeId" placeholder="ID for Update">
+
+      <input type="text" id="challengeName" placeholder="Challenge Name">
+
+      <input type="text" id="challengeDescription" placeholder="Description">
+
+      <input type="text" id="challengeStart" placeholder="Start Date">
+
+      <input type="text" id="challengeEnd" placeholder="End Date">
+
+      <input type="number" id="challengeTarget" placeholder="Target">
+
+      <input type="number" step="0.01" id="challengeReward" placeholder="Reward">
+
+      <button type="submit">Create Challenge</button>
+
+      <button type="button" onclick="updateChallenge()">Update Challenge</button>
+
+    </form>
+
+    <hr>
+
+    <input type="number" id="searchChallengeId" placeholder="Enter Challenge ID">
+
+    <button onclick="getChallengeById()">Search</button>
+
+    <button onclick="getChallenges()">Refresh</button>
+
+    <div id="challengeResult"></div>
+
+  </section>
+
+  <!-- PARTICIPATION -->
+  <section id="participation" class="section">
+
+    <h2>Participation</h2>
+
+    <form id="participationForm">
+
+      <input type="number" id="participationId" placeholder="ID for Update">
+
+      <input type="text" id="participationHousehold" placeholder="Household Name">
+
+      <input type="text" id="participationChallenge" placeholder="Challenge Name">
+
+      <input type="text" id="participationDate" placeholder="Join Date">
+
+      <input type="text" id="participationStatus" placeholder="Status">
+
+      <input type="number" step="0.01" id="participationCarbon" placeholder="Carbon Reduced">
+
+      <button type="submit">Create Participation</button>
+
+      <button type="button" onclick="updateParticipation()">Update Participation</button>
+
+    </form>
+
+    <hr>
+
+    <input type="number" id="searchParticipationId" placeholder="Enter Participation ID">
+
+    <button onclick="getParticipationById()">Search</button>
+
+    <button onclick="getParticipations()">Refresh</button>
+
+    <div id="participationResult"></div>
+
+  </section>
+
+</div>
+
+<script src="app.js"></script>
+
 </body>
 </html>
